@@ -64,8 +64,8 @@ ElementFileList::ElementFileList(core::Download* d) :
   m_selected(iterator(d->download()->file_list()->begin())),
   m_collapsed(false) {
 
-  m_bindings[KEY_LEFT] = m_bindings['B' - '@']  = sigc::mem_fun(&m_slotExit, &slot_type::operator());
-  m_bindings[KEY_RIGHT] = m_bindings['F' - '@'] = sigc::mem_fun(*this, &ElementFileList::receive_select);
+  m_bindings['h'] = m_bindings['B' - '@']  = sigc::mem_fun(&m_slotExit, &slot_type::operator());
+  m_bindings['l'] = m_bindings['F' - '@'] = sigc::mem_fun(*this, &ElementFileList::receive_select);
 
   m_bindings[' '] = sigc::mem_fun(*this, &ElementFileList::receive_priority);
   m_bindings['*'] = sigc::mem_fun(*this, &ElementFileList::receive_change_all);
@@ -73,8 +73,8 @@ ElementFileList::ElementFileList(core::Download* d) :
   m_bindings[KEY_NPAGE] = sigc::mem_fun(*this, &ElementFileList::receive_pagenext);
   m_bindings[KEY_PPAGE] = sigc::mem_fun(*this, &ElementFileList::receive_pageprev);
 
-  m_bindings[KEY_DOWN] = m_bindings['N' - '@'] = sigc::mem_fun(*this, &ElementFileList::receive_next);
-  m_bindings[KEY_UP]   = m_bindings['P' - '@'] = sigc::mem_fun(*this, &ElementFileList::receive_prev);
+  m_bindings['j'] = m_bindings['N' - '@'] = sigc::mem_fun(*this, &ElementFileList::receive_next);
+  m_bindings['k']   = m_bindings['P' - '@'] = sigc::mem_fun(*this, &ElementFileList::receive_prev);
 }
 
 inline ElementText*

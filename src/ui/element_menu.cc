@@ -72,11 +72,11 @@ ElementMenu::ElementMenu() :
   m_entry(entry_invalid) {
 
   // Move bindings into a function that defines default bindings.
-  m_bindings[KEY_LEFT] = m_bindings['B' - '@']  = sigc::mem_fun(&m_slotExit, &slot_type::operator());  
-  m_bindings[KEY_RIGHT] = m_bindings['F' - '@'] = sigc::mem_fun(this, &ElementMenu::entry_select);
+  m_bindings['h'] = m_bindings['B' - '@']  = sigc::mem_fun(&m_slotExit, &slot_type::operator());  
+  m_bindings['l'] = m_bindings['F' - '@'] = sigc::mem_fun(this, &ElementMenu::entry_select);
 
-  m_bindings[KEY_UP]   = m_bindings['P' - '@'] = sigc::mem_fun(this, &ElementMenu::entry_prev);
-  m_bindings[KEY_DOWN] = m_bindings['N' - '@'] = sigc::mem_fun(this, &ElementMenu::entry_next);
+  m_bindings['k']   = m_bindings['P' - '@'] = sigc::mem_fun(this, &ElementMenu::entry_prev);
+  m_bindings['j'] = m_bindings['N' - '@'] = sigc::mem_fun(this, &ElementMenu::entry_next);
 }
 
 ElementMenu::~ElementMenu() {

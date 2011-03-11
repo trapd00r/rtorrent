@@ -73,14 +73,14 @@ ElementPeerList::ElementPeerList(core::Download* d) :
 
   m_elementInfo->slot_exit(sigc::bind(sigc::mem_fun(this, &ElementPeerList::activate_display), DISPLAY_LIST));
 
-  m_bindings['k']       = sigc::mem_fun(this, &ElementPeerList::receive_disconnect_peer);
+  m_bindings['d']       = sigc::mem_fun(this, &ElementPeerList::receive_disconnect_peer);
   m_bindings['*']       = sigc::mem_fun(this, &ElementPeerList::receive_snub_peer);
   m_bindings['B']       = sigc::mem_fun(this, &ElementPeerList::receive_ban_peer);
-  m_bindings[KEY_LEFT] = m_bindings['B' - '@']  = sigc::mem_fun(&m_slotExit, &slot_type::operator());  
-  m_bindings[KEY_RIGHT] = m_bindings['F' - '@'] = sigc::bind(sigc::mem_fun(this, &ElementPeerList::activate_display), DISPLAY_INFO);
+  m_bindings['h'] = m_bindings['B' - '@']  = sigc::mem_fun(&m_slotExit, &slot_type::operator());  
+  m_bindings['l'] = m_bindings['F' - '@'] = sigc::bind(sigc::mem_fun(this, &ElementPeerList::activate_display), DISPLAY_INFO);
 
-  m_bindings[KEY_UP]   = m_bindings['P' - '@'] = sigc::mem_fun(this, &ElementPeerList::receive_prev);
-  m_bindings[KEY_DOWN] = m_bindings['N' - '@'] = sigc::mem_fun(this, &ElementPeerList::receive_next);
+  m_bindings['k']   = m_bindings['P' - '@'] = sigc::mem_fun(this, &ElementPeerList::receive_prev);
+  m_bindings['j'] = m_bindings['N' - '@'] = sigc::mem_fun(this, &ElementPeerList::receive_next);
 }
 
 ElementPeerList::~ElementPeerList() {
