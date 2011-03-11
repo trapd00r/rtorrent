@@ -48,7 +48,7 @@ class Canvas {
 public:
   typedef std::vector<Attributes> attributes_list;
 
-  Canvas(int x = 0, int y = 0, int width = 0, int height = 0) :
+  Canvas(int x = 0, int y = 0, int width = 1, int height = 1) :
     m_window(newwin(height, width, y, x)) {}
   ~Canvas() { delwin(m_window); }
 
