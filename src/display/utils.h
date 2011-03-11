@@ -66,7 +66,9 @@ char*       print_ddhhmm(char* first, char* last, time_t t);
 char*       print_ddmmyyyy(char* first, char* last, time_t t);
 
 char*       print_download_title(char* first, char* last, core::Download* d);
+char*       print_download_title_extra(char* first, char* last, core::Download* d);
 char*       print_download_info(char* first, char* last, core::Download* d);
+char*       print_download_info_extra(char* first, char* last, core::Download* d);
 char*       print_download_status(char* first, char* last, core::Download* d);
 char*       print_download_time_left(char* first, char* last, core::Download* d);
 char*       print_download_percentage_done(char* first, char* last, core::Download* d);

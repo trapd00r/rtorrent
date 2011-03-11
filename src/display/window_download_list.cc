@@ -34,9 +34,13 @@
 //           Skomakerveien 33
 //           3185 Skoppum, NORWAY
 
+// interface modifications by karabaja4
+// <karabaja4@archlinux.us>
+
 #include "config.h"
 
 #include <rak/algorithm.h>
+#include <torrent/rate.h>
 
 #include "core/download.h"
 #include "core/view.h"
@@ -81,7 +85,7 @@ WindowDownloadList::redraw() {
   Range range = rak::advance_bidirectional(m_view->begin_visible(),
                                            m_view->focus() != m_view->end_visible() ? m_view->focus() : m_view->begin_visible(),
                                            m_view->end_visible(),
-                                           m_canvas->height() / 3);
+                                           (m_canvas->height() - 1) / 3);
 
   // Make sure we properly fill out the last lines so it looks like
   // there are more torrents, yet don't hide it if we got the last one
@@ -89,24 +93,128 @@ WindowDownloadList::redraw() {
   if (range.second != m_view->end_visible())
     ++range.second;
 
-  int pos = 1;
+  int pos = 2;
 
   while (range.first != range.second) {
     char buffer[m_canvas->width() + 1];
     char* position;
     char* last = buffer + m_canvas->width() - 2 + 1;
-
-    position = print_download_title(buffer, last, *range.first);
-    m_canvas->print(0, pos++, "%c %s", range.first == m_view->focus() ? '*' : ' ', buffer);
+    int title_length;
     
+    //1 = red
+    //2 = yellow
+    //3 = green
+	
+	//do not print on last lines if cannot show whole torrent
+	if (pos >= (m_canvas->height() - 1))
+		break;
+	
+    //print title
+    position = print_download_title(buffer, last, *range.first);
+    //m_canvas->print(0, pos, "%c %s", range.first == m_view->focus() ? '*' : ' ', buffer);
+    title_length = strlen(buffer);
+    m_canvas->print(0, pos, "%c %s", range.first == m_view->focus() ? '*' : ' ', buffer);
+    
+    //title color
+    if( (*range.first)->is_done() ) {
+      //finished
+      if( (*range.first)->download()->up_rate()->rate() != 0 ) {
+		m_canvas->set_attr(3, pos, (title_length - 1), A_BOLD, 3);
+      } else {
+		m_canvas->set_attr(3, pos, (title_length - 1), A_NORMAL, 3);
+      }
+    } else {
+      //not finished
+      if( (*range.first)->download()->down_rate()->rate() != 0 ) {
+		m_canvas->set_attr(3, pos, (title_length - 1), A_BOLD, 2);
+      } else {
+		m_canvas->set_attr(3, pos, (title_length - 1), A_NORMAL, 2);
+      }
+    }
+
+    //print title extra
+    position = print_download_title_extra(buffer, last, *range.first);
+    
+    //do not let title extra get off screen
+    buffer[m_canvas->width() - title_length - 2] = '\0';
+    
+	m_canvas->print((title_length + 2), pos++, "%s", buffer);
+    
+    //print info
     position = print_download_info(buffer, last, *range.first);
-    m_canvas->print(0, pos++, "%c %s", range.first == m_view->focus() ? '*' : ' ', buffer);
-
-    position = print_download_status(buffer, last, *range.first);
-    m_canvas->print(0, pos++, "%c %s", range.first == m_view->focus() ? '*' : ' ', buffer);
-
+    m_canvas->print(0, pos, "%c %s", range.first == m_view->focus() ? '*' : ' ', buffer);
+    
+    //info color
+    if (!(*range.first)->download()->is_open()) {
+		//closed
+		m_canvas->set_attr(3, pos, 6, A_NORMAL, 1);
+	}
+	else if (!(*range.first)->download()->is_active()) {
+		//paused
+		m_canvas->set_attr(3, pos, 6, A_NORMAL, 2);
+	}
+	else {
+		//active
+		m_canvas->set_attr(3, pos, 6, A_NORMAL, 3);
+	}
+	
+	if ((*range.first)->is_done()) {
+		//finished
+		m_canvas->set_attr(12, pos, 8, A_NORMAL, 3);
+	}
+    
+    //do not print info extra if it collides with info
+    if ((strlen(buffer) + 2) <= (m_canvas->width() - 16)) {
+		
+		//print info extra
+		position = print_download_info_extra(buffer, last, *range.first);
+		m_canvas->print((m_canvas->width() - 16), pos++, "%s", buffer);
+		
+	}
+	else {
+		pos++;
+	}
+		
+    //skip one line
+    pos++;
     ++range.first;
   }    
+}
+
+void
+WindowDownloadList::set_done_fg_color(int64_t color) {
+  short fg, bg;
+  pair_content(3, &fg, &bg);
+  if( color < 0 ) color = -1;
+  color = color % 8;
+  init_pair(3, (short)color, bg);
+}
+
+void
+WindowDownloadList::set_done_bg_color(int64_t color) {
+  short fg, bg;
+  pair_content(3, &fg, &bg);
+  if( color < 0 ) color = -1;
+  color = color % 8;
+  init_pair(3, fg, (short)color);
+}
+
+void
+WindowDownloadList::set_active_fg_color(int64_t color) {
+  short fg, bg;
+  pair_content(2, &fg, &bg);
+  if( color < 0 ) color = -1;
+  color = color % 8;
+  init_pair(2, (short)color, bg);
+}
+
+void
+WindowDownloadList::set_active_bg_color(int64_t color) {
+  short fg, bg;
+  pair_content(2, &fg, &bg);
+  if( color < 0 ) color = -1;
+  color = color % 8;
+  init_pair(2, fg, (short)color);
 }
 
 }

@@ -48,6 +48,10 @@ WindowTitle::redraw() {
 
   m_canvas->print(std::max(0, ((int)m_canvas->width() - (int)m_title.size()) / 2 - 4), 0,
                   "*** %s ***", m_title.c_str());
+  
+  //set color in title
+  m_canvas->set_attr((((int)m_canvas->width() - (int)m_title.size()) / 2 - 4), 0, 3, A_NORMAL, 2);
+  m_canvas->set_attr( ((((int)m_canvas->width() - (int)m_title.size()) / 2) + (int)m_title.size() + 1), 0, 3, A_NORMAL, 2);
 }
 
 }
